@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAE Test – Part 4 Sentence Transformations</title>
+
+  <!-- Same readable font + softer background system -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Softer, less-grey background (consistent with your refreshed pages) */
+      --bg:#0f141a;
+      --bg2:#121a22;
+      --card:#161f28;
+      --card2:#18222c;
+
+      --ink:#f2f5f8;
+      --muted:#b7c2cc;
+      --line:rgba(255,255,255,.10);
+
+      /* Keep BROWN identity */
+      --accent:#a56f4a;
+      --accent-soft:#d2a37d;
+
+      --radius:16px;
+      --shadow:0 12px 30px rgba(0,0,0,.30);
+
+      --ok:#2bb673;
+      --err:#e25c5c;
+
+      --content: 980px;
+      --pad: clamp(14px, 3.6vw, 22px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+
+    body{
+      font-family:"Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(210,163,125,.12), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(165,111,74,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--ink);
+      line-height:1.75;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      padding-bottom:92px; /* room for fixed bottom nav */
+    }
+
+    /* ===== Header (consistent shell) ===== */
+    header{
+      position:sticky; top:0; z-index:20;
+      background: rgba(22,31,40,.88);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+    .header-inner{
+      max-width: var(--content);
+      margin:0 auto;
+      padding: 18px var(--pad);
+      text-align:center;
+    }
+    .brand{
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(210,163,125,.95);
+      font-size: clamp(0.85rem, 2.4vw, 1rem);
+      margin: 0 0 6px;
+    }
+    header h1{
+      margin:0;
+      font-size: clamp(1.2rem, 4.6vw, 1.85rem);
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      line-height:1.2;
+      color: var(--ink);
+    }
+
+    /* ===== Main card ===== */
+    .wrapper{
+      width:min(94%, 920px);
+      margin: clamp(14px, 4vw, 28px) auto;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding: clamp(18px, 4.8vw, 40px);
+    }
+
+    h2{
+      margin:0 0 .25rem 0;
+      text-align:center;
+      color: rgba(210,163,125,.96);
+      font-size: clamp(1.25rem, 4.2vw, 1.7rem);
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      margin:0 0 1rem 0;
+      font-weight:700;
+      font-size: clamp(.98rem, 3vw, 1.08rem);
+    }
+
+    p.instructions{
+      margin:0 0 1.25rem 0;
+      color:var(--muted);
+      font-size: clamp(1rem, 3vw, 1.08rem);
+    }
+
+    strong{
+      color: rgba(210,163,125,.98);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 2px;
+      font-weight: 800;
+    }
+
+    /* ===== Question blocks ===== */
+    .question-block{
+      margin-top: 14px;
+      background: rgba(255,255,255,0.03);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding: 14px 14px;
+    }
+
+    .question-head{
+      display:flex;
+      gap:.75rem;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+
+    .question-number{
+      font-weight:900;
+      color: rgba(210,163,125,.96);
+      letter-spacing:.06em;
+      font-size: 1.02rem;
+    }
+
+    .word-given{
+      font-weight:900;
+      letter-spacing:.14em;
+      color: rgba(210,163,125,.96);
+      text-transform:uppercase;
+      font-size: .92rem;
+      border:1px solid rgba(210,163,125,.30);
+      background: rgba(255,255,255,0.04);
+      padding:.3rem .6rem;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+
+    .sentence{
+      margin:6px 0;
+      color:var(--ink);
+      font-size: clamp(1.02rem, 2.8vw, 1.08rem);
+    }
+
+    /* ===== Inputs (clearer + bigger) ===== */
+    .answer-input{
+      width:100%;
+      margin-top:10px;
+      padding: 12px 12px;
+      font-size: 1.05rem;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: rgba(255,255,255,0.04);
+      color:var(--ink);
+      outline:none;
+      text-transform: lowercase;
+      min-height:46px; /* mobile tap target */
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .answer-input::placeholder{ color: rgba(183,194,204,.70); }
+
+    .answer-input:focus{
+      border-color: rgba(210,163,125,.55);
+      box-shadow: 0 0 0 3px rgba(210,163,125,.18);
+    }
+
+    .answer-input.correct{
+      border-color:var(--ok);
+      box-shadow:0 0 0 3px rgba(43,182,115,0.18);
+      background: rgba(43,182,115,.10);
+      font-weight:800;
+    }
+    .answer-input.wrong{
+      border-color:var(--err);
+      box-shadow:0 0 0 3px rgba(226,92,92,0.18);
+    }
+    .answer-input:disabled{ cursor:not-allowed; }
+
+    /* ===== Example ===== */
+    .example{
+      border-left:5px solid var(--accent);
+    }
+    .example .answer-input{
+      text-transform:none;
+      font-weight:800;
+      color: rgba(210,163,125,.98);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(210,163,125,0.35);
+      box-shadow:none;
+    }
+
+    /* ===== Submit / Score / Reveal ===== */
+    .submit-block{
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .submit-row{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .score-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding:.55rem .95rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,0.20);
+      font-weight:900;
+      min-height:46px;
+    }
+    .score-pill b{ color: rgba(210,163,125,.96); }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      background: var(--accent);
+      color:#140d08;
+      border:none;
+      border-radius:12px;
+      padding:.8rem 1.15rem;
+      cursor:pointer;
+      font-size:1rem;
+      font-weight:900;
+      transition: transform .15s ease, filter .2s ease, background .2s ease;
+      min-height:46px;
+    }
+    .btn:hover{ transform:translateY(-1px); filter:brightness(1.06); }
+
+    .btn-ghost{
+      background: rgba(255,255,255,0.06);
+      color: rgba(210,163,125,.96);
+      border:1px solid rgba(210,163,125,0.45);
+    }
+    .btn-ghost:hover{
+      background: rgba(165,111,74,0.18);
+      color: var(--ink);
+      border-color: rgba(210,163,125,0.65);
+      filter:none;
+    }
+
+    .notice{
+      margin-top:.8rem;
+      color:var(--muted);
+      font-size: .98rem;
+    }
+
+    #answerKey{
+      margin-top: 1rem;
+      display:none;
+      border-top:1px solid var(--line);
+      padding-top: 1rem;
+      color: var(--muted);
+    }
+
+    .key-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: .65rem 1rem;
+      margin-top: .75rem;
+      font-size: 1rem;
+    }
+
+    .key-grid div{
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 10px 10px;
+      color: var(--muted);
+    }
+    .key-grid strong{
+      text-decoration:none;
+      color: var(--ink);
+    }
+
+    /* ===== Bottom Navigation (consistent shell) ===== */
+    .bottom-nav{
+      position:fixed;
+      bottom:0; left:0; right:0;
+      background: rgba(22,31,40,.92);
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      padding: 0.75rem 0.5rem;
+      box-shadow:0 -2px 12px rgba(0,0,0,0.25);
+      z-index:1000;
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+
+    .bottom-nav a{
+      color: rgba(210,163,125,.95);
+      text-decoration:none;
+      font-weight:900;
+      font-size:0.98rem;
+      padding: 0.65rem 0.6rem;
+      border-radius:12px;
+      transition: background-color .2s ease, color .2s ease, transform .15s ease;
+      text-align:center;
+      flex:1;
+      margin:0 4px;
+      border:1px solid rgba(210,163,125,0.28);
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.35rem;
+      white-space:nowrap;
+    }
+
+    .bottom-nav a:hover{
+      background: rgba(210,163,125,0.14);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Mobile-first ===== */
+    @media (max-width:600px){
+      .wrapper{ margin: 12px auto; padding: 18px 16px; }
+      .question-block{ padding: 12px 12px; }
+
+      .submit-row{ justify-content:center; }
+      .score-pill{ width:100%; justify-content:center; }
+      .actions{ width:100%; }
+      .btn{ width:100%; }
+      .btn-ghost{ width:100%; }
+
+      .bottom-nav{ padding:0.6rem 0.45rem; }
+      .bottom-nav a{ font-size:0.9rem; padding:0.55rem 0.4rem; }
+      .key-grid{ grid-template-columns:1fr; }
+    }
+
+    @media print{
+      header,.submit-block,.bottom-nav{ display:none; }
+      body{ background:#fff; color:#000; padding:0; }
+      .wrapper{ box-shadow:none; border-color:#ccc; background:#fff; }
+      .question-block{ background:#fff; border-color:#ccc; }
+      .answer-input{ background:#fff; color:#000; border-color:#ccc; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">Modern English Australia</div>
+    <h1>CAE Test 3 – Reading &amp; Use of English</h1>
+  </div>
+</header>
+
+<main class="wrapper">
+  <h2>Part 4 · Key Word Transformations</h2>
+  <p class="sub">Sentence Transformations</p>
+
+  <p class="instructions">
+    For questions <strong>17–20</strong>, complete the second sentence so that it has a similar meaning to the first sentence,
+    using the word given. Do not change the word given. You must use between <strong>three and six words</strong>, including the word given.
+  </p>
+
+  <section class="question-block example">
+    <div class="question-head">
+      <div class="question-number">Example: 0</div>
+      <div class="word-given">ON</div>
+    </div>
+    <div class="sentence">James would only speak to the head of department alone.</div>
+    <div class="sentence">
+      James insisted
+      <input type="text" class="answer-input" value="on speaking" readonly />
+      to the head of department alone.
+    </div>
+  </section>
+
+  <section class="question-block">
+    <div class="question-head">
+      <div class="question-number">17</div>
+      <div class="word-given">MAY</div>
+    </div>
+    <div class="sentence">The CEO said, "It is possible that the meeting will be postponed until after Christmas."</div>
+    <div class="sentence">
+      The meeting
+      <input type="text" class="answer-input" id="q17" placeholder="Your answer here" />
+      until after Christmas.
+    </div>
+  </section>
+
+  <section class="question-block">
+    <div class="question-head">
+      <div class="question-number">18</div>
+      <div class="word-given">RECOMMENDED</div>
+    </div>
+    <div class="sentence">“You should try the new Italian restaurant in town,” she said.</div>
+    <div class="sentence">
+      She
+      <input type="text" class="answer-input" id="q18" placeholder="Your answer here" />
+      Italian restaurant in town.
+    </div>
+  </section>
+
+  <section class="question-block">
+    <div class="question-head">
+      <div class="question-number">19</div>
+      <div class="word-given">ADVISED</div>
+    </div>
+    <div class="sentence">“If you want to improve, you should practise every day,” the coach said.</div>
+    <div class="sentence">
+      The coach
+      <input type="text" class="answer-input" id="q19" placeholder="Your answer here" />
+      every day to improve.
+    </div>
+  </section>
+
+  <section class="question-block">
+    <div class="question-head">
+      <div class="question-number">20</div>
+      <div class="word-given">COMPLAINED</div>
+    </div>
+    <div class="sentence">“The order arrived late,” the client said.</div>
+    <div class="sentence">
+      The client
+      <input type="text" class="answer-input" id="q20" placeholder="Your answer here" />
+      arriving late.
+    </div>
+  </section>
+
+  <section class="submit-block" aria-label="Submit answers and score">
+    <div class="submit-row">
+      <div class="score-pill">Score: <b id="scoreText">—</b></div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="submitBtn">Submit answers</button>
+        <button type="button" class="btn btn-ghost" id="tryAgainBtn">Try again</button>
+        <button type="button" class="btn btn-ghost" id="toggleKeyBtn">Show answer key</button>
+      </div>
+    </div>
+
+    <div class="notice" id="noticeText">
+      Submit to score. Correct answers will lock. Incorrect answers stay editable.
+    </div>
+
+    <div id="answerKey">
+      <strong>Acceptable answers</strong>
+      <div class="key-grid" id="keyGrid"></div>
+      <div class="notice" style="margin-top:0.7rem;">
+        Marking is phrase-based (your answer can include extra words, as long as it contains an acceptable phrase).
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav" aria-label="Bottom navigation">
+  <a href="index.html">Home</a>
+  <a href="CAEt4p1.html">Part 1</a>
+  <a href="CAEt4p2.html">Part 2</a>
+  <a href="CAEt4p3.html">Part 3</a>
+  <a href="CAEt4p4.html">Part 4</a>
+</nav>
+
+<script>
+  const answersPart4 = {
+    q17: {
+      words: ["may be postponed"],
+      explanation: "‘May be postponed’ = possible that it will be postponed (passive)."
+    },
+    q18: {
+      words: ["recommended trying the new"],
+      explanation: "‘Recommend + -ing’ when suggesting an activity: ‘She recommended trying…’"
+    },
+    q19: {
+      words: [
+        "advised him to practise",
+        "advised her to practise",
+        "advised us to practise",
+        "advised them to practise"
+      ],
+      explanation: "‘Advise someone to do something’ allows different pronouns (him/her/us/them)."
+    },
+    q20: {
+      words: ["complained about the order"],
+      explanation: "‘Complain about + noun/gerund’ = correct collocation."
+    }
+  };
+
+  const ids = Object.keys(answersPart4);
+  const inputs = ids.map(id => document.getElementById(id));
+
+  const submitBtn = document.getElementById("submitBtn");
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
+  const toggleKeyBtn = document.getElementById("toggleKeyBtn");
+
+  const scoreText = document.getElementById("scoreText");
+  const noticeText = document.getElementById("noticeText");
+
+  const answerKey = document.getElementById("answerKey");
+  const keyGrid = document.getElementById("keyGrid");
+
+  function norm(s){
+    return (s || "").trim().toLowerCase().replace(/\s+/g," ");
+  }
+
+  function buildKey(){
+    keyGrid.innerHTML = "";
+    ids.forEach(q=>{
+      const item = answersPart4[q];
+      const div = document.createElement("div");
+      div.innerHTML = `<strong>${q.toUpperCase()}</strong>: ${item.words.join(" / ")}<br><em>${item.explanation}</em>`;
+      keyGrid.appendChild(div);
+    });
+  }
+
+  function allAnswered(){
+    return inputs.every(inp => norm(inp.value) !== "");
+  }
+
+  function grade(){
+    if (!allAnswered()){
+      noticeText.textContent = "Please attempt all questions (17–20) before submitting.";
+      return;
+    }
+
+    let score = 0;
+
+    inputs.forEach(inp=>{
+      const key = inp.id;
+      const student = norm(inp.value);
+      const acceptable = answersPart4[key].words.map(norm);
+
+      inp.classList.remove("correct","wrong");
+
+      const ok = acceptable.some(phrase => student.includes(phrase));
+
+      if (ok){
+        score++;
+        inp.classList.add("correct");
+        inp.disabled = true; // lock correct
+      } else {
+        inp.classList.add("wrong");
+        inp.disabled = false;
+      }
+    });
+
+    scoreText.textContent = `${score} / ${inputs.length}`;
+
+    noticeText.textContent = (score === inputs.length)
+      ? "Perfect score. Nice work."
+      : "Correct answers are locked. Fix the red ones and submit again.";
+  }
+
+  submitBtn.addEventListener("click", grade);
+
+  tryAgainBtn.addEventListener("click", ()=>{
+    inputs.forEach(inp=>{
+      inp.value = "";
+      inp.disabled = false;
+      inp.classList.remove("correct","wrong");
+    });
+    scoreText.textContent = "—";
+    noticeText.textContent = "Reset complete. Try again.";
+    answerKey.style.display = "none";
+    toggleKeyBtn.textContent = "Show answer key";
+  });
+
+  toggleKeyBtn.addEventListener("click", ()=>{
+    const showing = answerKey.style.display === "block";
+    answerKey.style.display = showing ? "none" : "block";
+    toggleKeyBtn.textContent = showing ? "Show answer key" : "Hide answer key";
+  });
+
+  buildKey();
+</script>
+
+</body>
+</html>

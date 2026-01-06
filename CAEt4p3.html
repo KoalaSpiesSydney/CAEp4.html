@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAE Test – Part 3 Word Formation</title>
+
+  <!-- Same readable font + softer background system -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Softer, less-grey background (consistent with your refreshed set) */
+      --bg:#0f141a;
+      --bg2:#121a22;
+      --card:#161f28;
+      --card2:#18222c;
+
+      --ink:#f2f5f8;
+      --muted:#b7c2cc;
+      --line:rgba(255,255,255,.10);
+
+      /* Keep PURPLE identity */
+      --accent:#7c4dff;
+      --accent-soft:#b59bff;
+
+      --radius:16px;
+      --shadow:0 12px 30px rgba(0,0,0,.30);
+
+      --ok:#2bb673;
+      --err:#e25c5c;
+
+      --content: 980px;
+      --pad: clamp(14px, 3.6vw, 22px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+
+    body{
+      font-family:"Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(181,155,255,.12), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(124,77,255,.12), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--ink);
+      margin:0;
+      padding-bottom:92px; /* room for nav */
+      line-height:1.75;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+    }
+
+    /* ===== Header (consistent shell) ===== */
+    header{
+      position:sticky; top:0; z-index:20;
+      background: rgba(22,31,40,.88);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+    .header-inner{
+      max-width: var(--content);
+      margin:0 auto;
+      padding: 18px var(--pad);
+      text-align:center;
+    }
+    .brand{
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(181,155,255,.95);
+      font-size: clamp(0.85rem, 2.4vw, 1rem);
+      margin: 0 0 6px;
+    }
+    header h1{
+      margin:0;
+      font-size: clamp(1.2rem, 4.6vw, 1.85rem);
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      line-height:1.2;
+      color: var(--ink);
+    }
+
+    /* ===== Wrapper / Card ===== */
+    .wrapper{
+      width:min(92%, 900px);
+      margin: clamp(16px, 4vw, 32px) auto;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding: clamp(18px, 4.8vw, 40px);
+    }
+
+    h2{
+      margin:0 0 10px 0;
+      color: rgba(181,155,255,.96);
+      font-size: clamp(1.25rem, 4.2vw, 1.7rem);
+      text-align:center;
+      font-weight:800;
+    }
+
+    p{ margin: 0 0 1rem; color:var(--ink); font-size: 1.05rem; }
+    .instructions{ color:var(--muted); margin-top:.25rem; font-size: 1.02rem; }
+
+    strong{
+      color: rgba(181,155,255,.98);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 2px;
+      font-weight: 800;
+    }
+
+    /* ===== Example ===== */
+    .example{
+      margin: 14px 0 18px;
+      padding: 14px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      text-align:center;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .example-box{
+      display:flex;
+      justify-content:center;
+      gap:6px;
+      margin-top: 10px;
+      flex-wrap:wrap;
+    }
+    .example-box input{
+      width: 34px;
+      font-size: 18px;
+      text-transform: uppercase;
+      text-align:center;
+      border:1px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 0;
+      background: rgba(255,255,255,0.04);
+      color: var(--ink);
+    }
+
+    /* ===== Text Block ===== */
+    .text-block{
+      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+    }
+
+    /* ===== Inputs (bigger + clearer) ===== */
+    .gap-input{
+      background: rgba(255,255,255,0.04);
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.6rem 0.75rem;
+      font: inherit;
+      font-weight: 700;
+      width: 200px;
+      max-width: 80vw;
+      margin: 0 8px;
+      vertical-align: baseline;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      outline:none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .gap-input:focus{
+      border-color: rgba(181,155,255,.55);
+      box-shadow: 0 0 0 3px rgba(181,155,255,.18);
+    }
+
+    .gap-input.correct{
+      border-color:var(--ok);
+      box-shadow:0 0 0 3px rgba(43,182,115,0.18);
+    }
+    .gap-input.wrong{
+      border-color:var(--err);
+      box-shadow:0 0 0 3px rgba(226,92,92,0.18);
+    }
+    .gap-input:disabled{
+      background: rgba(43,182,115,.10);
+      border-color: rgba(43,182,115,.55);
+      font-weight: 800;
+    }
+
+    /* ===== Words list ===== */
+    .words-list{
+      margin-top: 14px;
+      background: rgba(255,255,255,0.03);
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .word-item{
+      background: rgba(255,255,255,0.05);
+      border:1px solid rgba(181,155,255,0.35);
+      padding: 7px 12px;
+      border-radius: 999px;
+      user-select:none;
+      color: var(--ink);
+    }
+
+    /* ===== Submit / Score / Reveal ===== */
+    .submit-block{
+      margin-top: 1.6rem;
+      padding: 1rem;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.03);
+    }
+    .submit-row{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .score-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      padding:.55rem .95rem;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,0.20);
+      font-weight: 900;
+    }
+    .score-pill b{ color: rgba(181,155,255,.96); }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      background: var(--accent);
+      color:#130a22;
+      border:none;
+      border-radius: 12px;
+      padding: .75rem 1.15rem;
+      cursor:pointer;
+      font-size: 1rem;
+      font-weight: 900;
+      transition: transform .15s ease, filter .2s ease, background .2s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.06); }
+
+    .btn-ghost{
+      background: rgba(255,255,255,0.06);
+      color: rgba(181,155,255,.96);
+      border:1px solid rgba(181,155,255,0.45);
+    }
+    .btn-ghost:hover{
+      background: rgba(181,155,255,0.14);
+      color: var(--ink);
+      border-color: rgba(181,155,255,0.65);
+      filter:none;
+    }
+
+    .notice{
+      margin-top: .75rem;
+      color: var(--muted);
+      font-size: .98rem;
+    }
+
+    #answerKey{
+      margin-top: .95rem;
+      display:none;
+      border-top:1px solid var(--line);
+      padding-top: .95rem;
+      color: var(--muted);
+    }
+
+    .key-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: .65rem 1rem;
+      margin-top: .75rem;
+      font-size: 1rem;
+    }
+
+    .key-grid div{
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 10px 10px;
+      color: var(--muted);
+    }
+    .key-grid strong{
+      text-decoration:none;
+      color: var(--ink);
+    }
+
+    /* ===== Bottom Navigation (consistent shell) ===== */
+    .bottom-nav{
+      position:fixed;
+      bottom:0; left:0; right:0;
+      background: rgba(22,31,40,.92);
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      padding: 0.75rem 0.5rem;
+      box-shadow:0 -2px 12px rgba(0,0,0,0.25);
+      z-index:1000;
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+    .bottom-nav a{
+      color: rgba(181,155,255,.95);
+      text-decoration:none;
+      font-weight: 900;
+      font-size: 0.98rem;
+      padding: 0.65rem 0.6rem;
+      border-radius: 12px;
+      transition: background-color .2s ease, color .2s ease, transform .15s ease;
+      text-align:center;
+      flex:1;
+      margin:0 4px;
+      border:1px solid rgba(181,155,255,0.28);
+    }
+    .bottom-nav a:hover{
+      background: rgba(181,155,255,0.14);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Mobile first ===== */
+    @media (max-width:600px){
+      .wrapper{ padding: 18px 16px; }
+      p{ font-size: 1.02rem; }
+      .text-block{ padding: 16px; }
+
+      .gap-input{
+        display:block;
+        width:100%;
+        max-width:100%;
+        margin: .5rem 0 .65rem;
+      }
+
+      .submit-row{ justify-content:center; }
+      .score-pill{ width:100%; justify-content:center; }
+      .actions{ width:100%; }
+      .btn{ width:100%; }
+
+      .bottom-nav a{ font-size:0.9rem; padding:0.55rem 0.4rem; }
+    }
+
+    @media print{
+      header,.submit-block,.bottom-nav{ display:none; }
+      .wrapper{ box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">Modern English Australia</div>
+    <h1>CAE Test 3 – Reading &amp; Use of English</h1>
+  </div>
+</header>
+
+<div class="wrapper">
+  <h2>Part 3 · Word Formation</h2>
+
+  <p class="instructions">
+    For questions <strong>13–16</strong>, read the text below. Use the word given in capitals at the end of some lines to form a word that fits the gap in the same line. There is an example at the beginning (0).
+  </p>
+
+  <p class="instructions" style="font-weight:700;">
+    Write your answers <strong>IN CAPITAL LETTERS</strong>.
+  </p>
+
+  <div class="example">
+    Example: (0) ADAPTABLE
+    <div class="example-box" aria-hidden="true">
+      <input type="text" maxlength="1" value="A" readonly />
+      <input type="text" maxlength="1" value="D" readonly />
+      <input type="text" maxlength="1" value="A" readonly />
+      <input type="text" maxlength="1" value="P" readonly />
+      <input type="text" maxlength="1" value="T" readonly />
+      <input type="text" maxlength="1" value="A" readonly />
+      <input type="text" maxlength="1" value="B" readonly />
+      <input type="text" maxlength="1" value="L" readonly />
+      <input type="text" maxlength="1" value="E" readonly />
+    </div>
+  </div>
+
+  <div class="text-block">
+    <p>
+      Hair is the most easily (0) <strong>ADAPTABLE</strong> part of the human body and also one of the most (13)
+      <input type="text" class="gap-input" id="gap13" maxlength="15" aria-label="Answer gap 13" />.
+      The first barbers appeared in ancient Greece, when short hair became a sign of social status. Similarly, South American Inca chiefs had their hair short; in contrast, the hair of their citizens got (14)
+      <input type="text" class="gap-input" id="gap14" maxlength="18" aria-label="Answer gap 14" />
+      longer the further down the social chain they were. Barbers prospered in the days of the Roman Empire, until they were expelled from Rome, when it was discovered how much they earned.
+    </p>
+
+    <p>
+      Women have always reflected fashion through their hairstyles, sometimes quite (15)
+      <input type="text" class="gap-input" id="gap15" maxlength="18" aria-label="Answer gap 15" />.
+      In 15th-century Europe, women would pluck the hair from the front of their heads in (16)
+      <input type="text" class="gap-input" id="gap16" maxlength="15" aria-label="Answer gap 16" />
+      of beauty.
+    </p>
+  </div>
+
+  <div class="words-list" aria-label="Word list">
+    <div class="word-item">ADAPT</div>
+    <div class="word-item">DISTINCT</div>
+    <div class="word-item">PROGRESS</div>
+    <div class="word-item">DRAMA</div>
+    <div class="word-item">PURSUE</div>
+  </div>
+
+  <section class="submit-block" aria-label="Submit answers and score">
+    <div class="submit-row">
+      <div class="score-pill">Score: <b id="scoreText">—</b></div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="submitBtn">Submit answers</button>
+        <button type="button" class="btn btn-ghost" id="tryAgainBtn">Try again</button>
+        <button type="button" class="btn btn-ghost" id="toggleKeyBtn">Show answer key</button>
+      </div>
+    </div>
+
+    <div class="notice" id="noticeText">
+      Answer questions 13–16, then submit to see your score. Correct answers will lock.
+    </div>
+
+    <div id="answerKey">
+      <strong>Answer key</strong>
+      <div class="key-grid" id="keyGrid"></div>
+      <div class="notice" style="margin-top:0.6rem;">
+        Explanations included.
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="bottom-nav">
+  <a href="index.html">Home</a>
+  <a href="CAEt4p1.html">Part 1</a>
+  <a href="CAEt4p2.html">Part 2</a>
+  <a href="CAEt4p3.html">Part 3</a>
+  <a href="CAEt4p4.html">Part 4</a>
+</nav>
+
+<script>
+  const answersPart3 = {
+    gap13: { word: "DISTINCTIVE", explanation: "From DISTINCT → ‘one of the most distinctive’ = easily recognisable." },
+    gap14: { word: "PROGRESSIVELY", explanation: "From PROGRESS → ‘progressively longer’ = gradually, step by step." },
+    gap15: { word: "DRAMATICALLY", explanation: "From DRAMA → ‘sometimes quite dramatically’ = to a great extent." },
+    gap16: { word: "PURSUIT", explanation: "From PURSUE → ‘in pursuit of beauty’ is the fixed phrase." }
+  };
+
+  const inputs = Object.keys(answersPart3).map(id => document.getElementById(id));
+  const submitBtn = document.getElementById("submitBtn");
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
+  const toggleKeyBtn = document.getElementById("toggleKeyBtn");
+  const scoreText = document.getElementById("scoreText");
+  const noticeText = document.getElementById("noticeText");
+  const answerKey = document.getElementById("answerKey");
+  const keyGrid = document.getElementById("keyGrid");
+
+  function norm(s){
+    return (s || "").trim().toUpperCase().replace(/\s+/g," ");
+  }
+
+  function buildKey(){
+    keyGrid.innerHTML = "";
+    Object.keys(answersPart3).forEach(q=>{
+      const item = answersPart3[q];
+      const div = document.createElement("div");
+      div.innerHTML = `<strong>${q.toUpperCase()}</strong>: ${item.word}<br><em>${item.explanation}</em>`;
+      keyGrid.appendChild(div);
+    });
+  }
+
+  function allAnswered(){
+    return inputs.every(inp => norm(inp.value) !== "");
+  }
+
+  function grade(){
+    if (!allAnswered()){
+      noticeText.textContent = "Please answer all questions (13–16) before submitting.";
+      return;
+    }
+
+    let score = 0;
+
+    inputs.forEach(inp=>{
+      const key = inp.id;
+      const student = norm(inp.value);
+      const correct = answersPart3[key].word;
+
+      inp.classList.remove("correct","wrong");
+
+      if (student === correct){
+        score++;
+        inp.classList.add("correct");
+        inp.disabled = true; // lock correct
+      } else {
+        inp.classList.add("wrong");
+        inp.disabled = false;
+      }
+    });
+
+    scoreText.textContent = `${score} / ${inputs.length}`;
+    noticeText.textContent = (score === inputs.length)
+      ? "Perfect score. Nice work."
+      : "Correct answers are locked. Fix the red ones and submit again.";
+  }
+
+  submitBtn.addEventListener("click", grade);
+
+  tryAgainBtn.addEventListener("click", ()=>{
+    inputs.forEach(inp=>{
+      inp.value = "";
+      inp.disabled = false;
+      inp.classList.remove("correct","wrong");
+    });
+    scoreText.textContent = "—";
+    noticeText.textContent = "Reset complete. Try again.";
+  });
+
+  toggleKeyBtn.addEventListener("click", ()=>{
+    const showing = answerKey.style.display === "block";
+    answerKey.style.display = showing ? "none" : "block";
+    toggleKeyBtn.textContent = showing ? "Show answer key" : "Hide answer key";
+  });
+
+  buildKey();
+</script>
+
+</body>
+</html>

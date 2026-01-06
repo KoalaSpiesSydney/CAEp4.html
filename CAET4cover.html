@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Use of Language – CAE Practice</title>
+
+  <!-- Cleaner, very readable UI font (Inter is fine too, but this reads even softer) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Softer dark theme (less grey, less harsh, more readable) */
+      --bg:#0f141a;          /* deep blue-charcoal */
+      --bg2:#121a22;
+      --card:#161f28;
+      --card2:#18222c;
+      --ink:#f2f5f8;
+      --muted:#b7c2cc;
+      --line:rgba(255,255,255,.10);
+      --accent:#ff7a1a;
+
+      --shadow:0 12px 30px rgba(0,0,0,.30);
+      --radius:16px;
+
+      /* Button lanes (kept) */
+      --p1a:#4a6fa5; --p1b:#3f5f8a;
+      --p2a:#3f8f7d; --p2b:#2f6f60;
+      --p3a:#8a6fa5; --p3b:#6a4f8a;
+      --p4a:#a56f4a; --p4b:#8a5530;
+
+      --content: 980px;
+      --pad: clamp(14px, 3.6vw, 22px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+
+    body{
+      font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-weight: 400;
+      letter-spacing: .01em;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(255,122,26,.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(74,111,165,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color: var(--ink);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ===== Header (less intense, more breathing room) ===== */
+    header{
+      position:sticky; top:0; z-index:20;
+      background: rgba(22,31,40,.88);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+
+    .header-inner{
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 18px var(--pad);
+      text-align:center;
+      position:relative;
+    }
+
+    .home-link{
+      position:absolute;
+      top: 14px;
+      left: var(--pad);
+      text-decoration:none;
+      color: var(--accent);
+      border: 1px solid rgba(255,122,26,0.28);
+      background: rgba(255,122,26,0.10);
+      border-radius: 12px;
+      width: 46px;
+      height: 46px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform .15s ease, background .2s ease, color .2s ease;
+      font-size: 1.05rem;
+    }
+    .home-link:hover{
+      background: var(--accent);
+      color:#111;
+      transform: translateY(-1px);
+    }
+
+    .brand{
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,122,26,.95);
+      font-size: clamp(0.85rem, 2.4vw, 1rem);
+      margin: 0 0 6px;
+    }
+
+    header h1{
+      margin:0;
+      font-size: clamp(1.25rem, 4.5vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    header h1 a{
+      color: var(--ink);
+      text-decoration:none;
+    }
+
+    /* ===== Main ===== */
+    main{ flex:1; }
+
+    .main-content{
+      width: min(92%, 900px);
+      margin: clamp(18px, 4vw, 34px) auto;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(22px, 5vw, 42px);
+      text-align:center;
+    }
+
+    .main-content h2{
+      margin: 0 0 22px;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: clamp(1.1rem, 3.6vw, 1.35rem);
+      letter-spacing: .02em;
+    }
+
+    .nav-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .nav-button{
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+      padding: 18px 18px; /* more space */
+      color:#fff;
+      text-decoration:none;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+      text-align:left;
+      transition: transform .18s ease, filter .2s ease, box-shadow .2s ease;
+    }
+    .nav-button:hover{
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+      box-shadow: 0 14px 30px rgba(0,0,0,.30);
+    }
+
+    .nav-button .title{
+      font-weight: 800;
+      letter-spacing: .02em;
+      font-size: 1.15rem; /* easier to read */
+    }
+    .nav-button .desc{
+      font-size: 1rem; /* easier to read */
+      opacity: .95;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .p1{ background: linear-gradient(135deg, var(--p1a), var(--p1b)); }
+    .p2{ background: linear-gradient(135deg, var(--p2a), var(--p2b)); }
+    .p3{ background: linear-gradient(135deg, var(--p3a), var(--p3b)); }
+    .p4{ background: linear-gradient(135deg, var(--p4a), var(--p4b)); }
+
+    /* Back link (your HTML had this class but no CSS) */
+    .back-link{
+      display:inline-block;
+      margin-top: 18px;
+      color: rgba(255,255,255,0.88);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      transition: background .2s ease, transform .15s ease;
+    }
+    .back-link:hover{
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Footer ===== */
+    footer{
+      border-top: 1px solid var(--line);
+      background: rgba(22,31,40,.92);
+      text-align:center;
+      padding: 14px 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    footer span{ font-weight: 800; color: var(--ink); }
+
+    /* ===== Larger screens ===== */
+    @media (min-width: 720px){
+      .nav-grid{
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .nav-button{
+        min-height: 86px;
+        padding: 20px 20px;
+      }
+      .nav-button .title{ font-size: 1.2rem; }
+      .nav-button .desc{ font-size: 1.02rem; }
+    }
+
+    /* ===== Mobile fine-tuning ===== */
+    @media (max-width: 420px){
+      .main-content{ padding: 22px 16px; }
+      .home-link{ left: 12px; }
+    }
+
+    @media print{
+      header, footer{ display:none; }
+      body{ background:#fff; color:#000; }
+      .main-content{ box-shadow:none; border:1px solid #ccc; background:#fff; }
+      .nav-button{ box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="https://koalaspiessydney.github.io/ModernEnglishAU/MEAtests.html" class="home-link" aria-label="Home">🏠</a>
+
+    <div class="brand">MODERN ENGLISH AUSTRALIA</div>
+    <h1>
+      <a href="https://koalaspiessydney.github.io/ModernEnglishAU/MEAtests.html">Use of Language</a>
+    </h1>
+  </div>
+</header>
+
+<main>
+  <section class="main-content" aria-label="Choose a part">
+    <h2>Choose a Part</h2>
+
+    <div class="nav-grid">
+      <a href="CAEt4p1.html" class="nav-button p1">
+        <div class="title">Part 1</div>
+        <div class="desc">Multiple-Choice Cloze</div>
+      </a>
+
+      <a href="CAEt4p2.html" class="nav-button p2">
+        <div class="title">Part 2</div>
+        <div class="desc">Open Cloze</div>
+      </a>
+
+      <a href="CAEt4p3.html" class="nav-button p3">
+        <div class="title">Part 3</div>
+        <div class="desc">Word Formation</div>
+      </a>
+
+      <a href="CAEt4p4.html" class="nav-button p4">
+        <div class="title">Part 4</div>
+        <div class="desc">Key Word Transformations</div>
+      </a>
+    </div>
+
+    <a href="index.html" class="back-link">← Back</a>
+  </section>
+</main>
+
+<footer>
+  © <span>Koala Spies Sydney</span> 2025
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CAE – Reading & Use of English | Part 1</title>
+
+<!-- Same readable font + softer dark background as your updated cover page -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  /* Softer, less-grey background; higher legibility */
+  --bg:#0f141a;
+  --bg2:#121a22;
+  --card:#161f28;
+  --card2:#18222c;
+
+  --ink:#f2f5f8;
+  --muted:#b7c2cc;
+  --line:rgba(255,255,255,.10);
+
+  /* Keep your blue identity */
+  --accent:#3f6f8f;
+  --accent-soft:#6fa3c7;
+
+  --radius:16px;
+  --shadow:0 12px 30px rgba(0,0,0,.30);
+
+  --ok:#2bb673;
+  --err:#e25c5c;
+
+  --content: 980px;
+  --pad: clamp(14px, 3.6vw, 22px);
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; }
+
+body{
+  font-family:"Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(111,163,199,.14), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(63,111,143,.14), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  color:var(--ink);
+  line-height:1.75;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding-bottom:92px; /* room for bottom nav */
+}
+
+/* ===== HEADER (lighter/cleaner) ===== */
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background: rgba(22,31,40,.88);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:saturate(140%) blur(8px);
+}
+
+.header-inner{
+  max-width: var(--content);
+  margin:0 auto;
+  padding: 18px var(--pad);
+  text-align:center;
+}
+
+.brand{
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color: rgba(111,163,199,.98);
+  font-size: clamp(0.85rem, 2.4vw, 1rem);
+  margin: 0 0 6px;
+}
+
+header h1{
+  margin:0;
+  font-size: clamp(1.2rem, 4.6vw, 1.85rem);
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  line-height:1.2;
+}
+
+/* ===== MAIN CARD ===== */
+main{ flex:1; }
+
+.container{
+  width:min(92%, 920px);
+  margin: clamp(16px, 4vw, 32px) auto;
+  background: linear-gradient(180deg, var(--card), var(--card2));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding: clamp(18px, 4.8vw, 40px);
+}
+
+h2{
+  margin:0 0 10px;
+  color: var(--accent-soft);
+  font-size: clamp(1.25rem, 4.2vw, 1.7rem);
+  text-align:center;
+  font-weight:800;
+}
+
+.lead{
+  color:var(--muted);
+  margin:.25rem 0;
+  font-size: 1.02rem;
+}
+
+strong{
+  color: var(--accent-soft);
+  font-weight:800;
+}
+
+h3{
+  margin:1.4rem 0 .6rem;
+  font-size: 1.15rem;
+  color: var(--ink);
+  letter-spacing: .02em;
+}
+
+/* More breathing room for text blocks */
+.container p{
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+}
+
+/* ===== DROPDOWNS (bigger + easier) ===== */
+select{
+  margin: 0 6px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.04);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 14ch;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+option{ background:#10161c; }
+
+select:focus{
+  border-color: rgba(111,163,199,.65);
+  box-shadow: 0 0 0 3px rgba(111,163,199,.18);
+}
+
+select.correct{
+  border-color:var(--ok);
+  box-shadow:0 0 0 3px rgba(43,182,115,.18);
+}
+
+select.wrong{
+  border-color:var(--err);
+  box-shadow:0 0 0 3px rgba(226,92,92,.18);
+}
+
+select:disabled{
+  background: rgba(43,182,115,.10);
+  border-color: rgba(43,182,115,.55);
+  font-weight: 800;
+}
+
+/* ===== SUBMIT AREA (clearer) ===== */
+.submit-block{
+  margin-top: 1.6rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.03);
+}
+
+.submit-row{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.score-pill{
+  background: rgba(0,0,0,0.20);
+  border:1px solid var(--line);
+  border-radius: 999px;
+  padding: .55rem .95rem;
+  font-weight: 800;
+}
+
+.score-pill b{ color: var(--accent-soft); }
+
+.actions{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn{
+  background: var(--accent);
+  color:#fff;
+  border:none;
+  border-radius: 12px;
+  padding: .75rem 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease;
+}
+
+.btn:hover{ background: var(--accent-soft); transform: translateY(-1px); }
+
+.btn-ghost{
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.btn-ghost:hover{
+  background: rgba(255,255,255,0.10);
+}
+
+.notice{
+  margin-top: .7rem;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  background: rgba(22,31,40,.92);
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:space-around;
+  padding: .7rem .45rem;
+  backdrop-filter:saturate(140%) blur(8px);
+}
+
+.bottom-nav a{
+  flex:1;
+  margin:0 4px;
+  text-align:center;
+  text-decoration:none;
+  font-weight: 800;
+  color: rgba(111,163,199,.95);
+  padding: .65rem .45rem;
+  border-radius: 12px;
+  border: 1px solid rgba(111,163,199,.28);
+  transition: background .2s ease, color .2s ease, transform .15s ease;
+}
+
+.bottom-nav a:hover{
+  background: rgba(111,163,199,.18);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+/* ===== MOBILE FIRST tweaks ===== */
+@media (max-width: 600px){
+  .container{ padding: 18px 16px; }
+  .container p{ font-size: 1.02rem; }
+
+  select{
+    display:block;
+    width: min(100%, 360px);
+    margin: 10px 0 6px;
+  }
+
+  .submit-row{
+    justify-content: center;
+  }
+
+  .score-pill{
+    width: 100%;
+    text-align:center;
+  }
+
+  .actions{
+    width:100%;
+  }
+
+  .btn{
+    width:100%;
+  }
+}
+
+@media print{
+  header, .bottom-nav{ display:none; }
+  body{ background:#fff; color:#000; padding-bottom:0; }
+  .container{ box-shadow:none; border:1px solid #ccc; background:#fff; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">Modern English Australia</div>
+    <h1>CAE – Reading &amp; Use of English</h1>
+  </div>
+</header>
+
+<main>
+  <section class="container">
+    <h2>Part 1 · Multiple-Choice Cloze</h2>
+
+    <p class="lead"><strong>Questions 1–8</strong> — choose the correct option for each gap.</p>
+    <p class="lead"><em>There is an example at the beginning (0).</em></p>
+
+    <p><strong>Example:</strong><br>
+      0 A aspect B <strong>part</strong> C element D factor
+    </p>
+
+    <h3>Reality Television</h3>
+
+    <p>
+      Reality television has become a big (0) <strong>part</strong> of modern entertainment.
+      These shows often feature normal people in unusual situations, creating drama that audiences find
+      (1)
+      <select id="q1">
+        <option value="">— choose —</option>
+        <option value="A">nearly</option>
+        <option value="B">similarly</option>
+        <option value="C">accurately</option>
+        <option value="D">particularly</option>
+      </select>
+      interesting.
+    </p>
+
+    <p>
+      The genre has grown rapidly and has
+      (2)
+      <select id="q2">
+        <option value="">— choose —</option>
+        <option value="A">risen</option>
+        <option value="B">depreciated</option>
+        <option value="C">levelled</option>
+        <option value="D">significant</option>
+      </select>
+      in popularity.
+    </p>
+
+    <p>
+      Some critics argue it encourages
+      (3)
+      <select id="q3">
+        <option value="">— choose —</option>
+        <option value="A">funny</option>
+        <option value="B">unusual</option>
+        <option value="C">risky</option>
+        <option value="D">safe</option>
+      </select>
+      behaviour, as participants are often
+      (4)
+      <select id="q4">
+        <option value="">— choose —</option>
+        <option value="A">assumed</option>
+        <option value="B">encouraged</option>
+        <option value="C">exposed</option>
+        <option value="D">disclosed</option>
+      </select>
+      to create conflict.
+    </p>
+
+    <p>
+      Others see the genre as a
+      (5)
+      <select id="q5">
+        <option value="">— choose —</option>
+        <option value="A">deterrent</option>
+        <option value="B">prompt</option>
+        <option value="C">catalyst</option>
+        <option value="D">obstacle</option>
+      </select>
+      for change.
+    </p>
+
+    <p>
+      It has also
+      (6)
+      <select id="q6">
+        <option value="">— choose —</option>
+        <option value="A">provided</option>
+        <option value="B">prevented</option>
+        <option value="C">give</option>
+        <option value="D">arisen</option>
+      </select>
+      opportunities for fame.
+    </p>
+
+    <p>
+      Despite criticism, shows continue to
+      (7)
+      <select id="q7">
+        <option value="">— choose —</option>
+        <option value="A">dismay</option>
+        <option value="B">engage</option>
+        <option value="C">divide</option>
+        <option value="D">delighting</option>
+      </select>
+      audiences as an
+      (8)
+      <select id="q8">
+        <option value="">— choose —</option>
+        <option value="A">defensive</option>
+        <option value="B">unpopular</option>
+        <option value="C">integral</option>
+        <option value="D">insignificant</option>
+      </select>
+      part of popular culture.
+    </p>
+
+    <section class="submit-block" aria-label="Submit and score">
+      <div class="submit-row">
+        <div class="score-pill">Score: <b id="score">—</b></div>
+        <div class="actions">
+          <button class="btn" id="submitBtn" type="button">Submit</button>
+          <button class="btn btn-ghost" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+      <div class="notice" id="notice">Choose an option for every gap before submitting.</div>
+    </section>
+
+  </section>
+</main>
+
+<nav class="bottom-nav" aria-label="Navigation">
+  <a href="index.html">Home</a>
+  <a href="CAEtpt1.html">Part 1</a>
+  <a href="CAEt4t2.html">Part 2</a>
+  <a href="CAEt4t3">Part 3</a>
+  <a href="CAEt4p4.html">Part 4</a>
+</nav>
+
+<script>
+  const answers = {
+    q1:"D", q2:"A", q3:"C", q4:"B",
+    q5:"C", q6:"A", q7:"B", q8:"C"
+  };
+
+  const selects = Object.keys(answers).map(id => document.getElementById(id));
+  const scoreEl = document.getElementById("score");
+  const noticeEl = document.getElementById("notice");
+  const submitBtn = document.getElementById("submitBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  function clearMarks(){
+    selects.forEach(sel => {
+      sel.classList.remove("correct","wrong");
+      sel.disabled = false;
+    });
+    scoreEl.textContent = "—";
+    noticeEl.textContent = "Choose an option for every gap before submitting.";
+  }
+
+  function check(){
+    // Require all answered
+    for (const sel of selects){
+      sel.classList.remove("correct","wrong");
+      if (!sel.value){
+        noticeEl.textContent = "Please answer every gap (1–8) before submitting.";
+        scoreEl.textContent = "—";
+        return;
+      }
+    }
+
+    let score = 0;
+
+    selects.forEach(sel => {
+      const correct = answers[sel.id];
+      if (sel.value === correct){
+        score++;
+        sel.classList.add("correct");
+        sel.disabled = true; // lock correct ones only
+      } else {
+        sel.classList.add("wrong");
+      }
+    });
+
+    scoreEl.textContent = `${score} / ${selects.length}`;
+    noticeEl.textContent = (score === selects.length)
+      ? "Perfect score."
+      : "Correct answers are locked. Change the incorrect ones and submit again.";
+  }
+
+  submitBtn.addEventListener("click", check);
+  resetBtn.addEventListener("click", clearMarks);
+</script>
+
+</body>
+</html>

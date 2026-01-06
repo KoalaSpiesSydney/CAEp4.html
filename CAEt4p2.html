@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Test 3 – Reading and Use of English: Part 2</title>
+
+  <!-- Match the updated, easier-to-read style -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Softer, less-grey background */
+      --bg:#0f141a;
+      --bg2:#121a22;
+      --card:#161f28;
+      --card2:#18222c;
+
+      --ink:#f2f5f8;
+      --muted:#b7c2cc;
+      --line:rgba(255,255,255,.10);
+
+      /* Keep GREEN identity */
+      --accent:#2bb673;
+      --accent-soft:#62d49b;
+
+      --radius:16px;
+      --shadow:0 12px 30px rgba(0,0,0,.30);
+
+      --ok:#2bb673;
+      --err:#e25c5c;
+
+      --content: 980px;
+      --pad: clamp(14px, 3.6vw, 22px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+
+    body{
+      font-family:"Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(98,212,155,.12), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(43,182,115,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--ink);
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+      line-height:1.75;
+      padding-bottom:92px; /* room for bottom nav */
+    }
+
+    /* ===== Header (clean, consistent) ===== */
+    header{
+      position:sticky; top:0; z-index:20;
+      background: rgba(22,31,40,.88);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+    .header-inner{
+      max-width: var(--content);
+      margin:0 auto;
+      padding: 18px var(--pad);
+      text-align:center;
+    }
+    .brand{
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color: rgba(98,212,155,.95);
+      font-size: clamp(0.85rem, 2.4vw, 1rem);
+      margin: 0 0 6px;
+    }
+    header h1{
+      margin:0;
+      font-size: clamp(1.2rem, 4.6vw, 1.85rem);
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      line-height:1.2;
+      color: var(--ink);
+    }
+
+    /* ===== Main ===== */
+    .container{
+      width:min(92%, 900px);
+      margin: clamp(16px, 4vw, 32px) auto;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding: clamp(18px, 4.8vw, 40px);
+    }
+
+    h2{
+      margin:0 0 10px 0;
+      color: rgba(98,212,155,.96);
+      font-size:clamp(1.25rem,4.2vw,1.7rem);
+      text-align:center;
+      font-weight:800;
+    }
+
+    h3{ margin:1.3rem 0 .55rem; color:var(--ink); font-size:1.15rem; }
+    p{ margin: 0 0 1rem; color:var(--ink); font-size: 1.05rem; }
+    em{ color:var(--muted); }
+
+    strong{
+      color: rgba(98,212,155,.98);
+      font-weight:800;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 2px;
+    }
+
+    .lead{ color:var(--muted); margin: .25rem 0; font-size: 1.02rem; }
+
+    /* ===== Inputs (bigger + clearer) ===== */
+    input[type="text"]{
+      background: rgba(255,255,255,0.04);
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:0.6rem 0.75rem;
+      margin: 0 8px;
+      font: inherit;
+      font-weight: 700;
+      width: 140px;
+      max-width: 80vw;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      outline:none;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    input[type="text"]:focus{
+      border-color: rgba(98,212,155,.60);
+      box-shadow: 0 0 0 3px rgba(98,212,155,.18);
+    }
+
+    input.correct{
+      border-color:var(--ok);
+      box-shadow:0 0 0 3px rgba(43,182,115,0.18);
+    }
+    input.wrong{
+      border-color:var(--err);
+      box-shadow:0 0 0 3px rgba(226,92,92,0.18);
+    }
+    input:disabled{
+      background: rgba(43,182,115,.10);
+      border-color: rgba(43,182,115,.55);
+      font-weight: 800;
+    }
+
+    .hint{
+      margin-top:1rem;
+      padding: .95rem 1rem;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(255,255,255,0.03);
+      color:var(--muted);
+      font-size: 1rem;
+    }
+
+    /* ===== Submit / Score / Key ===== */
+    .submit-block{
+      margin-top:1.6rem;
+      padding: 1rem;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .submit-row{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .score-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      padding:.55rem .95rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,0.20);
+      font-weight:900;
+    }
+    .score-pill b{ color: rgba(98,212,155,.96); }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btn{
+      background: var(--accent);
+      color:#061a12;
+      border:none;
+      border-radius: 12px;
+      padding:.75rem 1.15rem;
+      cursor:pointer;
+      font-size:1rem;
+      font-weight:900;
+      transition: transform .15s ease, filter .2s ease, background .2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px); filter:brightness(1.05); }
+
+    .btn-ghost{
+      background: rgba(255,255,255,0.06);
+      color: rgba(98,212,155,.98);
+      border:1px solid rgba(98,212,155,0.45);
+    }
+    .btn-ghost:hover{
+      background: rgba(98,212,155,0.14);
+      color: var(--ink);
+      border-color: rgba(98,212,155,0.65);
+      filter:none;
+    }
+
+    .notice{
+      margin-top:.75rem;
+      color:var(--muted);
+      font-size: 0.98rem;
+    }
+
+    #answerKey{
+      margin-top: .95rem;
+      display:none;
+      border-top:1px solid var(--line);
+      padding-top: .95rem;
+      color:var(--muted);
+    }
+
+    .key-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(190px, 1fr));
+      gap:.65rem 1rem;
+      margin-top:.75rem;
+      font-size: 1rem;
+    }
+
+    .key-grid div{
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 10px 10px;
+      color: var(--muted);
+    }
+    .key-grid strong{
+      text-decoration:none;
+      color: var(--ink);
+    }
+
+    /* ===== Bottom Navigation (consistent shell) ===== */
+    .bottom-nav{
+      position:fixed;
+      bottom:0; left:0; right:0;
+      background: rgba(22,31,40,.92);
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      padding: 0.75rem 0.5rem;
+      box-shadow:0 -2px 12px rgba(0,0,0,0.25);
+      z-index:1000;
+      backdrop-filter:saturate(140%) blur(8px);
+    }
+
+    .bottom-nav a{
+      color: rgba(98,212,155,.95);
+      text-decoration:none;
+      font-weight:900;
+      font-size: 0.98rem;
+      padding: 0.65rem 0.6rem;
+      border-radius: 12px;
+      transition: background-color .2s ease, color .2s ease, transform .15s ease;
+      text-align:center;
+      flex:1;
+      margin:0 4px;
+      border:1px solid rgba(98,212,155,0.28);
+    }
+    .bottom-nav a:hover{
+      background: rgba(98,212,155,0.14);
+      color: var(--ink);
+      transform:translateY(-1px);
+    }
+
+    /* ===== Mobile first: stack inputs + buttons ===== */
+    @media (max-width:600px){
+      .container{ padding: 18px 16px; }
+      p{ font-size: 1.02rem; }
+
+      input[type="text"]{
+        display:block;
+        width: 100%;
+        max-width: 100%;
+        margin: .5rem 0 .65rem;
+      }
+
+      .submit-row{
+        justify-content: center;
+      }
+
+      .score-pill{
+        width: 100%;
+        justify-content: center;
+      }
+
+      .actions{
+        width: 100%;
+      }
+
+      .btn{
+        width: 100%;
+      }
+
+      .bottom-nav a{
+        font-size: 0.9rem;
+        padding: 0.55rem 0.4rem;
+      }
+    }
+
+    @media print{
+      .bottom-nav,.submit-block{ display:none; }
+      header, .container{ box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">Modern English Australia</div>
+    <h1>CAE – Reading and Use of English</h1>
+  </div>
+</header>
+
+<div class="container">
+  <h2>Part 2 · Open Cloze</h2>
+
+  <p class="lead"><strong>Questions 9–12</strong> — think of the word which best fits each gap. Use <strong>only one word</strong> in each gap.</p>
+  <p class="lead"><em>Write your answers in CAPITAL LETTERS.</em></p>
+
+  <h3>Social Media and Children</h3>
+
+  <p>
+    Social media exposes children <strong>(0)</strong> to rapid communication, peer influence, and curated content that can shape their self-image and behavior.
+    While it offers opportunities 9.
+    <input type="text" id="q9" maxlength="20" />
+    creativity and connection, it also introduces risks such 10.
+    <input type="text" id="q10" maxlength="20" />
+    cyberbullying, privacy breaches, and addictive usage patterns.
+    Parents and educators protect children 11.
+    <input type="text" id="q11" maxlength="20" />
+    the dangers of the internet while at the same time allowing them 12.
+    <input type="text" id="q12" maxlength="20" />
+    take advantage of new technology.
+  </p>
+
+  <div class="hint"><strong>Hint:</strong> for, as, from, to, of etc</div>
+
+  <section class="submit-block" aria-label="Submit answers and score">
+    <div class="submit-row">
+      <div class="score-pill">
+        Score: <b id="scoreText">—</b>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="submitBtn">Submit answers</button>
+        <button type="button" class="btn btn-ghost" id="tryAgainBtn">Try again</button>
+        <button type="button" class="btn btn-ghost" id="toggleKeyBtn">Show answer key</button>
+      </div>
+    </div>
+
+    <div class="notice" id="noticeText">
+      Answer questions 9–12, then submit to see your score. Correct answers will lock.
+    </div>
+
+    <div id="answerKey">
+      <strong>Answer key</strong>
+      <div class="key-grid" id="keyGrid"></div>
+      <div class="notice" style="margin-top:0.6rem;">
+        The key includes an explanation for each answer.
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="bottom-nav">
+  <a href="index.html">Home</a>
+  <a href="CAEt4p1.html">Part 1</a>
+  <a href="CAEt4p2.html">Part 2</a>
+  <a href="CAEt4p3.html">Part 3</a>
+  <a href="CAEt4p4.html">Part 4</a>
+</nav>
+
+<script>
+  const answersPart2 = {
+    q9:  { word: "FOR",  explanation: "‘Opportunities for…’ is the correct preposition with ‘opportunity’." },
+    q10: { word: "AS",   explanation: "‘Such as…’ introduces examples." },
+    q11: { word: "FROM", explanation: "Correct collocation: ‘protect someone from’ danger." },
+    q12: { word: "TO",   explanation: "‘Allow someone to do something’ requires ‘to’." }
+  };
+
+  const inputs = Object.keys(answersPart2).map(id => document.getElementById(id));
+  const submitBtn = document.getElementById("submitBtn");
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
+  const toggleKeyBtn = document.getElementById("toggleKeyBtn");
+  const scoreText = document.getElementById("scoreText");
+  const noticeText = document.getElementById("noticeText");
+  const answerKey = document.getElementById("answerKey");
+  const keyGrid = document.getElementById("keyGrid");
+
+  function norm(s){ return (s || "").trim().toUpperCase(); }
+
+  function buildKey(){
+    keyGrid.innerHTML = "";
+    Object.keys(answersPart2).forEach(q=>{
+      const item = answersPart2[q];
+      const div = document.createElement("div");
+      div.innerHTML = `<strong>${q.toUpperCase()}</strong>: ${item.word}<br><em>${item.explanation}</em>`;
+      keyGrid.appendChild(div);
+    });
+  }
+
+  function allAnswered(){ return inputs.every(inp => norm(inp.value) !== ""); }
+
+  function grade(){
+    if (!allAnswered()){
+      noticeText.textContent = "Please answer all questions (9–12) before submitting.";
+      return;
+    }
+
+    let score = 0;
+
+    inputs.forEach(inp=>{
+      const key = inp.id;
+      const student = norm(inp.value);
+      const correct = answersPart2[key].word;
+
+      inp.classList.remove("correct","wrong");
+
+      if (student === correct){
+        score++;
+        inp.classList.add("correct");
+        inp.disabled = true; // lock correct
+      } else {
+        inp.classList.add("wrong");
+        inp.disabled = false;
+      }
+    });
+
+    scoreText.textContent = `${score} / ${inputs.length}`;
+    noticeText.textContent = (score === inputs.length)
+      ? "Perfect score. Nice work."
+      : "Correct answers are locked. Fix the red ones and submit again.";
+  }
+
+  submitBtn.addEventListener("click", grade);
+
+  tryAgainBtn.addEventListener("click", ()=>{
+    inputs.forEach(inp=>{
+      inp.value = "";
+      inp.disabled = false;
+      inp.classList.remove("correct","wrong");
+    });
+    scoreText.textContent = "—";
+    noticeText.textContent = "Reset complete. Try again.";
+    // keep key state as-is
+  });
+
+  toggleKeyBtn.addEventListener("click", ()=>{
+    const showing = answerKey.style.display === "block";
+    answerKey.style.display = showing ? "none" : "block";
+    toggleKeyBtn.textContent = showing ? "Show answer key" : "Hide answer key";
+  });
+
+  buildKey();
+</script>
+
+</body>
+</html>
